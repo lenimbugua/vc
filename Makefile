@@ -1,4 +1,4 @@
-DB_URL=postgresql://root:password@localhost:5432/virtual?sslmode=disable
+DB_SOURCE=postgresql://root:password@localhost:5432/virtual?sslmode=disable
 
 postgres:
 	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=password -d postgres:16-alpine
