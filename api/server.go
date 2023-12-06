@@ -12,7 +12,7 @@ import (
 
 // server serves HTTP  requests for hazini
 type Server struct {
-	dbStore    *db.Store
+	dbStore    db.Store
 	logger     logger.Log
 	router     *gin.Engine
 	config     *util.Config
@@ -20,7 +20,7 @@ type Server struct {
 }
 
 // Newserver creates a new HTTP server and sets up routing
-func NewServer(dbStore *db.Store, logger logger.Log, config *util.Config, httpClient *http.Client) (*Server, error) {
+func NewServer(dbStore db.Store, logger logger.Log, config *util.Config, httpClient *http.Client) (*Server, error) {
 
 	server := &Server{
 		dbStore:    dbStore,
@@ -49,7 +49,7 @@ func (server *Server) setupRouter() {
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 
-	router.POST("/periods", server.createPeriod)
+	router.POST("/periods", server.nareVirtualLeaguePeriods)
 
 	server.router = router
 }

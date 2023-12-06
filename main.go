@@ -38,11 +38,11 @@ func main() {
 
 	// runDBMigration(config.MigrationURL, config.DBSource)
 
-	store := db.NewSQLStore(conn)
+	store := db.NewSQLStore(conn, logger.CustomLogger())
 
 	var httpClient = &http.Client{}
 
-	server, err := api.NewServer(&store, logger, &config, httpClient)
+	server, err := api.NewServer(store, logger, &config, httpClient)
 	if err != nil {
 		log.Fatal("cannot create server", err)
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func MakeHTTPRequest(client *http.Client, logger zerolog.Logger, httpMethod string, url string, body io.Reader) ([]byte, error) {
+func MakeHTTPRequest(client *http.Client, logger *zerolog.Logger, httpMethod string, url string, body io.Reader) ([]byte, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		logger.Error().Err(err).Msg("could not create request")

@@ -13,7 +13,8 @@ import (
 )
 
 type Log interface {
-	CustomLogger(c *gin.Context) zerolog.Logger
+	APILogger(c *gin.Context) zerolog.Logger
+	CustomLogger() *zerolog.Logger
 }
 
 type LogStore struct {
@@ -28,18 +29,9 @@ func NewLogger(config *util.Config, file *os.File) Log {
 	}
 }
 
-func (logStore *LogStore) CustomLogger(c *gin.Context) zerolog.Logger {
+func (logStore *LogStore) APILogger(c *gin.Context) zerolog.Logger {
 	// before request
 	t := time.Now()
-
-	// Set example variable
-	c.Set("example", "12345")
-
-	c.Next()
-
-	// after request
-	latency := time.Since(t)
-
 	// access the status we are sending
 	status := c.Writer.Status()
 
@@ -60,6 +52,11 @@ func (logStore *LogStore) CustomLogger(c *gin.Context) zerolog.Logger {
 		logger = log.Error().Bytes("body", rec.Body)
 	}
 
+	c.Next()
+
+	// after request
+	latency := time.Since(t)
+
 	// Custom format
 	logger.Str("origin", c.GetHeader("Referer")).
 		Str("client_ip", c.ClientIP()).
@@ -72,6 +69,19 @@ func (logStore *LogStore) CustomLogger(c *gin.Context) zerolog.Logger {
 		Str("user_agent", c.Request.UserAgent()).Msg(c.Request.Host)
 
 	return log.Logger
+}
+
+func (logStore *LogStore) CustomLogger() *zerolog.Logger {
+	var writer = io.MultiWriter(logStore.file)
+
+	/* If env is prod write to file else write to std output */
+	if logStore.config.Env == "dev" {
+		writer = io.MultiWriter(os.Stderr)
+	}
+
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: writer, TimeFormat: "2006-01-02 15:04:05"}).With().Timestamp().Caller().Logger()
+
+	return &log.Logger
 }
 
 type ResponseRecorder struct {

@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
+	"github.com/rs/zerolog"
 )
 
 // Provides all the fuctions to execute database queries as well as transactions
@@ -13,13 +15,15 @@ type Store interface {
 
 type SQLStore struct {
 	*Queries
-	db *sql.DB
+	db     *sql.DB
+	logger *zerolog.Logger
 }
 
-func NewSQLStore(db *sql.DB) Store {
+func NewSQLStore(db *sql.DB, logger *zerolog.Logger) Store {
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
+		logger:  logger,
 	}
 }
 

@@ -8,7 +8,6 @@ import (
 )
 
 func LogFile(config *Config) ( *os.File, error) {
-
 	// Extract the directory path from the log file path
 	dir := filepath.Dir(config.LogFile)
 
@@ -26,5 +25,4 @@ func LogFile(config *Config) ( *os.File, error) {
 	}
 
 	return file, nil
-
 }
